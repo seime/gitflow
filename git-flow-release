@@ -192,7 +192,7 @@ cmd_finish() {
 	DEFINE_string message "" "use the given tag message" m
 	DEFINE_boolean push false "push to $ORIGIN after performing finish" p
 	DEFINE_boolean keep false "keep branch after performing finish" k
-	DEFINE_boolean notag false "don't tag this release" n
+	DEFINE_boolean notag true "don't tag this release" n
 
 	parse_args "$@"
 	require_version_arg
@@ -224,7 +224,7 @@ cmd_finish() {
 	if ! git_is_branch_merged_into "$BRANCH" "$MASTER_BRANCH"; then
 		git checkout "$MASTER_BRANCH" || \
 		  die "Could not check out $MASTER_BRANCH."
-		git merge --no-ff "$BRANCH" || \
+		git merge --no-ff "$BRANCH"~1 -m"Merged version $VERSION onto master" || \
 		  die "There were merge conflicts."
 		  # TODO: What do we do now?
 	fi
